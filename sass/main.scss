@@ -1,6 +1,41 @@
 @import "bourbon";
 @import "font-awesome";
 
+div {
+  border: 1px solid black;
+}
+
+h2 {
+  padding-left: 20px;
+  border: 1px solid #7FBE2C;
+  background-color: #7FBE2C;
+}
+
+ul {
+  background-color: #00EDF2;
+  padding-left: 0;
+}
+
 body {
   background: #e2ebf3;
+  width: 50%;
+  font-family: 'Lato', sans-serif;
+  text-align: center;
+  margin: 0 auto;
+}
+
+.avatar {
+  width: 20px;
+}
+
+li {
+  list-style: none;
+  border: 1px solid black;
+  height: 35px;
+  padding-top: 10px;
+  text-align: block;
+}
+
+i {
+  padding-right: 10px;
 }

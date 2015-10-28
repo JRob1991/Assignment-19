@@ -17,7 +17,7 @@ _jquery2['default'].ajaxSetup({
   }
 });
 
-},{"jquery":9}],2:[function(require,module,exports){
+},{"jquery":11}],2:[function(require,module,exports){
 'use strict';
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
@@ -49,7 +49,7 @@ window.router = router;
 
 console.log('Hello, World');
 
-},{"./ajax_setup":1,"./router":3,"jquery":9,"moment":10,"underscore":11}],3:[function(require,module,exports){
+},{"./ajax_setup":1,"./router":3,"jquery":11,"moment":12,"underscore":13}],3:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -66,13 +66,13 @@ var _jquery = require('jquery');
 
 var _jquery2 = _interopRequireDefault(_jquery);
 
-var _userinfo_collection = require('./userinfo_collection');
+var _user_collection = require('./user_collection');
 
-var _userinfo_collection2 = _interopRequireDefault(_userinfo_collection);
+var _user_collection2 = _interopRequireDefault(_user_collection);
 
-var _userinfo_modelJs = require('./userinfo_model.js');
+var _user_model = require('./user_model');
 
-var _userinfo_modelJs2 = _interopRequireDefault(_userinfo_modelJs);
+var _user_model2 = _interopRequireDefault(_user_model);
 
 // import userInfoTemp from '.userinfo_collection';
 
@@ -80,45 +80,81 @@ var _viewsHome = require('./views/home');
 
 var _viewsHome2 = _interopRequireDefault(_viewsHome);
 
-var Router = _backbone2['default'].Router.extend({
+var _viewsUser_list = require('./views/user_list');
 
-  // Routing Section
-  routes: {
-    "": "home",
-    "userinfo": "showUserInfo",
-    "userinfo/:id": "showInividualUser"
-  },
+var _viewsUser_list2 = _interopRequireDefault(_viewsUser_list);
 
-  initialize: function initialize(appElement) {
-    this.$appEl = appElement;
+var _viewsUser = require('./views/user');
 
-    this.userinfo = new _userinfo_collection2['default']();
+var _viewsUser2 = _interopRequireDefault(_viewsUser);
 
-    var router = this;
+var routes = {
+  "": "showHome",
+  "users": "showUsers",
+  "users/:id": "showInividualUser"
+};
 
-    this.$appEl.on('click', '.todo-list-item', function (event) {
-      var $appEl = (0, _jquery2['default'])(event.currentTarget);
-      var userinfoId = $li.data('userInfoId');
-      router.navigate('userinfo/${userInfoId}');
-      router.showInividualUser(userInfoId);
+function initialize(appElement) {
+  this.$appEl = appElement;
+
+  this.users = new _user_collection2['default']();
+
+  var router = this;
+
+  this.$appEl.on('click', '.user-list-item', function (event) {
+    var $li = (0, _jquery2['default'])(event.currentTarget);
+    var userId = $li.data('user-id');
+    router.navigate('users/' + userId);
+    router.showInividualUser(userId);
+  });
+}
+
+function showHome() {
+  console.log('show home page');
+  this.$appEl.html((0, _viewsHome2['default'])());
+}
+
+function showUsers() {
+  var _this = this;
+
+  console.log('this is the users page');
+  this.users.fetch().then(function () {
+    _this.$appEl.html((0, _viewsUser_list2['default'])(_this.users.toJSON()));
+  });
+}
+
+function showInividualUser(id) {
+  var _this2 = this;
+
+  var user = this.users.get(id);
+
+  if (user) {
+    this.$appEl.html((0, _viewsUser2['default'])(user.toJSON()));
+  } else {
+    user = this.users.add({ objectId: id });
+    user.fetch().then(function () {
+      _this2.$appEl.html((0, _viewsUser2['default'])(user.toJSON()));
     });
-  },
-
-  home: function home() {
-    console.log('show home page');
-    this.$appEl.html((0, _viewsHome2['default'])());
-  },
-
-  start: function start() {
-    _backbone2['default'].history.start();
   }
+}
 
+function start() {
+  _backbone2['default'].history.start();
+}
+
+var Router = _backbone2['default'].Router.extend({
+  routes: routes,
+  initialize: initialize,
+  showHome: showHome,
+  showUsers: showUsers,
+  showInividualUser: showInividualUser,
+  start: start
 });
 
 exports['default'] = Router;
 module.exports = exports['default'];
 
-},{"./userinfo_collection":4,"./userinfo_model.js":5,"./views/home":6,"backbone":8,"jquery":9}],4:[function(require,module,exports){
+},{"./user_collection":4,"./user_model":5,"./views/home":6,"./views/user":7,"./views/user_list":8,"backbone":10,"jquery":11}],4:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -131,16 +167,16 @@ var _backbone = require('backbone');
 
 var _backbone2 = _interopRequireDefault(_backbone);
 
-var _userinfo_model = require('./userinfo_model');
+var _user_model = require('./user_model');
 
-var _userinfo_model2 = _interopRequireDefault(_userinfo_model);
+var _user_model2 = _interopRequireDefault(_user_model);
 
 // Extend and provide instance/class properties
-var userInfoCollection = _backbone2['default'].Collection.extend({
+var UserCollection = _backbone2['default'].Collection.extend({
 
-  url: 'https://api.parse.com/1/classes/userInfo',
+  url: 'https://api.parse.com/1/classes/FirstName',
 
-  model: _userinfo_model2['default'],
+  model: _user_model2['default'],
 
   parse: function parse(data) {
     return data.results;
@@ -148,10 +184,10 @@ var userInfoCollection = _backbone2['default'].Collection.extend({
 
 });
 
-exports['default'] = userInfoCollection;
+exports['default'] = UserCollection;
 module.exports = exports['default'];
 
-},{"./userinfo_model":5,"backbone":8}],5:[function(require,module,exports){
+},{"./user_model":5,"backbone":10}],5:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -164,31 +200,63 @@ var _Backbone = require('Backbone');
 
 var _Backbone2 = _interopRequireDefault(_Backbone);
 
-var userInfoModel = _Backbone2['default'].Model.extend({
-
-  urlRoot: 'https://api.parse.com/1/classes/Todo',
+var UserModel = _Backbone2['default'].Model.extend({
 
   idAttribute: 'objectId'
 
 });
 
-exports['default'] = userInfoModel;
+exports['default'] = UserModel;
 module.exports = exports['default'];
 
-},{"Backbone":7}],6:[function(require,module,exports){
+},{"Backbone":9}],6:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 function homeTemp() {
-  return "\n  <ul>\n    <li>Hey</li>\n  </ul>\n  ";
+  return "\n  <ul>\n    <li>\n    <a href=\"#users\">Here is the URL for the contact list</a>\n    </li>\n  </ul>\n  ";
 }
 
 exports["default"] = homeTemp;
 module.exports = exports["default"];
 
 },{}],7:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+function userTemplate(user) {
+  return "\n  <div><img src=\"images/avatar.png\"></img></div>\n  <ul>\n    <li><i class=\"fa fa-user\"></i>" + user.FirstName + " " + user.LastName + "</li>\n    <li><i class=\"fa fa-phone\"></i>" + user.PhoneNumber + "</li>\n    <li><i class=\"fa fa-location-arrow\"></i>" + user.Location + "</li>\n  </ul>\n  <span><i class=\"fa fa-backward\"></i><a href=\"#users\">Back</a></span>\n\n  ";
+}
+
+exports["default"] = userTemplate;
+module.exports = exports["default"];
+
+},{}],8:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+
+function makeUserList(users) {
+  return users.map(function (user) {
+    var photoURL = user.Photo || 'images/avatar.png';
+    return '\n      <li class="user-list-item" data-user-id="' + user.objectId + '">\n        <img class="avatar" src="' + photoURL + '" />\n        <span class="user-name">' + user.FirstName + ' ' + user.LastName + '</span>\n      </li>\n    ';
+  }).join('');
+}
+
+function usersTemplate(users) {
+  return '\n    <h2>MY PEEPS</h2>\n    <ul>' + makeUserList(users) + '</ul>\n  ';
+}
+
+exports['default'] = usersTemplate;
+module.exports = exports['default'];
+
+},{}],9:[function(require,module,exports){
 (function (global){
 //     Backbone.js 1.2.3
 
@@ -2087,7 +2155,7 @@ module.exports = exports["default"];
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{"jquery":9,"underscore":11}],8:[function(require,module,exports){
+},{"jquery":11,"underscore":13}],10:[function(require,module,exports){
 (function (global){
 //     Backbone.js 1.2.3
 
@@ -3986,7 +4054,7 @@ module.exports = exports["default"];
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{"jquery":9,"underscore":11}],9:[function(require,module,exports){
+},{"jquery":11,"underscore":13}],11:[function(require,module,exports){
 /*!
  * jQuery JavaScript Library v2.1.4
  * http://jquery.com/
@@ -13198,7 +13266,7 @@ return jQuery;
 
 }));
 
-},{}],10:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 //! moment.js
 //! version : 2.10.6
 //! authors : Tim Wood, Iskren Chernev, Moment.js contributors
@@ -16394,7 +16462,7 @@ return jQuery;
     return _moment;
 
 }));
-},{}],11:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 //     Underscore.js 1.8.3
 //     http://underscorejs.org
 //     (c) 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors

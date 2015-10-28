@@ -1,8 +1,9 @@
 function homeTemp() {
   return `
   <ul>
-    <li>Hey</li>
-    <li>${item.FirstName}</li>
+    <li>
+    <a href="#users">Here is the URL for the contact list</a>
+    </li>
   </ul>
   `
 }

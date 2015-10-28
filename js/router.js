@@ -1,45 +1,72 @@
 import Backbone from 'backbone';
 import $ from 'jquery';
 
-import userInfoCollection from './userinfo_collection';
-import userInfoModel from './userinfo_model.js'
+import UserCollection from './user_collection';
+import UserInfoModel from './user_model'
 
 // import userInfoTemp from '.userinfo_collection';
 import homeTemp from './views/home';
+import userListTemplate from './views/user_list';
+import userTemplate from './views/user';
 
-let Router = Backbone.Router.extend({
+let routes = {
+  ""           :  "showHome",
+  "users"      :  "showUsers",
+  "users/:id"  :  "showInividualUser"
+};
 
-// Routing Section
-  routes: {
-    ""              :  "home",
-    "userinfo"      :  "showUserInfo",
-    "userinfo/:id"  :  "showInividualUser"
-  },
+function initialize(appElement) {
+  this.$appEl = appElement;
 
-  initialize: function(appElement) {
-    this.$appEl = appElement;
+  this.users = new UserCollection();
 
-    this.userinfo = new userInfoCollection();
+  let router = this;
 
-    let router = this;
+  this.$appEl.on('click', '.user-list-item', function(event) {
+    let $li = $(event.currentTarget);
+    var userId = $li.data('user-id');
+    router.navigate(`users/${userId}`);
+    router.showInividualUser(userId);
+  });
+}
 
-    this.$appEl.on('click', '.todo-list-item', function(event) {
-      let $appEl = $(event.currentTarget);
-      var userinfoId = $li.data('userInfoId');
-      router.navigate('userinfo/${userInfoId}');
-      router.showInividualUser(userInfoId);
+function showHome() {
+  console.log('show home page');
+  this.$appEl.html( homeTemp() );
+}
+
+function showUsers() {
+  console.log('this is the users page');
+  this.users.fetch().then(() => {
+    this.$appEl.html( userListTemplate(this.users.toJSON()) );
+  });
+}
+
+function showInividualUser(id) {
+  let user = this.users.get(id);
+
+  if (user) {
+    this.$appEl.html( userTemplate(user.toJSON()) );
+  }
+  else {
+    user = this.users.add({objectId: id});
+    user.fetch().then(() => {
+      this.$appEl.html( userTemplate(user.toJSON()) );
     });
-  },
+  }
+}
 
-  home: function() {
-    console.log('show home page');
-    this.$appEl.html( homeTemp() );
-  },
-
-start: function() {
+function start() {
   Backbone.history.start();
 }
 
+let Router = Backbone.Router.extend({
+  routes,
+  initialize,
+  showHome,
+  showUsers,
+  showInividualUser,
+  start
 });
 
 export default Router;
