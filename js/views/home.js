@@ -1,11 +1,7 @@
 function homeTemp() {
   return `
-  <ul>
-    <li>
-    <a href="#users">Here is the URL for the contact list</a>
-    </li>
-  </ul>
-  `
+    <p>Hey</p>
+  `;
 }
 
 export default homeTemp;

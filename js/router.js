@@ -8,10 +8,12 @@ import UserInfoModel from './user_model'
 import homeTemp from './views/home';
 import userListTemplate from './views/user_list';
 import userTemplate from './views/user';
+import formTemp from './views/form';
 
 let routes = {
   ""           :  "showHome",
   "users"      :  "showUsers",
+  "users/new"  :  "showForm",
   "users/:id"  :  "showInividualUser"
 };
 
@@ -20,13 +22,11 @@ function initialize(appElement) {
 
   this.users = new UserCollection();
 
-  let router = this;
-
-  this.$appEl.on('click', '.user-list-item', function(event) {
+  this.$appEl.on('click', '.user-list-item', (event) => {
     let $li = $(event.currentTarget);
     var userId = $li.data('user-id');
-    router.navigate(`users/${userId}`);
-    router.showInividualUser(userId);
+    this.navigate(`users/${userId}`);
+    this.showInividualUser(userId);
   });
 }
 
@@ -56,6 +56,24 @@ function showInividualUser(id) {
   }
 }
 
+function showForm() {
+  this.$appEl.html(formTemp());
+  $('#btnCreateUser').on('click', (evt) => {
+    console.log('it worked!');
+    let newUser = {
+      FirstName: $('input[name="FirstName"]').val(),
+      LastName: $('input[name="LastName"]').val(),
+      PhoneNumber: $('input[name="PhoneNumber"]').val(),
+      Location: $('input[name="Location"]').val(),
+      Photo: $('input[name="Photo"]').val()
+    };
+    this.users.create(newUser);
+    this.navigate('users');
+    this.showUsers();
+    return false;
+  });
+}
+
 function start() {
   Backbone.history.start();
 }
@@ -66,6 +84,7 @@ let Router = Backbone.Router.extend({
   showHome,
   showUsers,
   showInividualUser,
+  showForm,
   start
 });
 

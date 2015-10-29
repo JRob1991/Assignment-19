@@ -33,9 +33,13 @@
     "watchify": "^3.4.0"
   },
   "dependencies": {
+    "bourbon": "^4.2.6",
+    "bourbon-neat": "^1.7.2",
     "font-awesome": "^4.4.0",
     "jquery": "^2.1.4",
     "moment": "^2.10.6",
+    "neat": "^1.2.2",
+    "node-neat": "^1.7.2",
     "normalize.css": "^3.0.3",
     "underscore": "^1.8.3"
   }

@@ -3,29 +3,50 @@
 
 div {
   border: 1px solid black;
+  background-color: #00A6BC;
 }
 
 h2 {
-  padding-left: 20px;
-  border: 1px solid #7FBE2C;
-  background-color: #7FBE2C;
+  font-size: 20px;
 }
 
 ul {
-  background-color: #00EDF2;
+  background-color: #EEE;
   padding-left: 0;
+  margin: 0 auto;
+  text-align: center;
 }
 
 body {
-  background: #e2ebf3;
-  width: 50%;
-  font-family: 'Lato', sans-serif;
+  padding-top: 10px;
+  width: 25%;
   text-align: center;
   margin: 0 auto;
+  font-family: 'Lato', sans-serif;
 }
 
 .avatar {
-  width: 20px;
+  position: relative;
+  float: left;
+  width:  35px;
+  height: 35px;
+  background-position: 50% 50%;
+  background-repeat:   no-repeat;
+  background-size:     cover;
+  padding-left: 10px;
+  border-radius: 10px;
+}
+
+.avatarlrg {
+  width: 50%;
+  padding-top: 6px;
+  padding-bottom: 6px;
+  border-radius: 50% 50%;
+  padding-right: 35px;
+}
+
+.user-list-item {
+  padding-bottom: 8px;
 }
 
 li {
@@ -33,9 +54,55 @@ li {
   border: 1px solid black;
   height: 35px;
   padding-top: 10px;
-  text-align: block;
+  font-size: 23px;
 }
 
 i {
   padding-right: 10px;
+}
+
+.plus {
+  float: left;
+  padding-left: 5px;
+  padding-top: 5px;
+}
+
+input {
+  margin: 5px;
+}
+
+form {
+  padding: 20px;
+}
+
+.buttonUser {
+  width: 40%;
+  height: 45px;
+  margin-top: 30px;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+a {
+  text-decoration: none;
+}
+
+.back-button {
+  float: left;
+}
+
+li:hover {
+  text-decoration: underline;
+}
+
+.user-line {
+  text-decoration: none !important;
+}
+
+.user-float {
+  float: left;
+  padding-top: 5px;
+  padding-left: 5px;
 }

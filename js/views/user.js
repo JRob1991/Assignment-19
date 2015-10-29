@@ -1,12 +1,15 @@
+
 function userTemplate(user) {
+  let photoURL = user.Photo || 'images/avatar.png';
   return `
-  <div><img src="images/avatar.png"></img></div>
+  <div><img class="avatarlrg" src="${photoURL}" />
+  <a href="#users"><i class="fa fa-backward user-float"></i></a>
+  </div>
   <ul>
-    <li><i class="fa fa-user"></i>${user.FirstName} ${user.LastName}</li>
-    <li><i class="fa fa-phone"></i>${user.PhoneNumber}</li>
-    <li><i class="fa fa-location-arrow"></i>${user.Location}</li>
+    <li class="user-line"><i class="fa fa-user"></i>${user.FirstName} ${user.LastName}</li>
+    <li class="user-line"><i class="fa fa-phone"></i>${user.PhoneNumber}</li>
+    <li class="user-line"><i class="fa fa-location-arrow"></i>${user.Location}</li>
   </ul>
-  <span><i class="fa fa-backward"></i><a href="#users">Back</a></span>
 
   `;
 }

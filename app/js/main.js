@@ -17,7 +17,7 @@ _jquery2['default'].ajaxSetup({
   }
 });
 
-},{"jquery":11}],2:[function(require,module,exports){
+},{"jquery":12}],2:[function(require,module,exports){
 'use strict';
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
@@ -49,7 +49,7 @@ window.router = router;
 
 console.log('Hello, World');
 
-},{"./ajax_setup":1,"./router":3,"jquery":11,"moment":12,"underscore":13}],3:[function(require,module,exports){
+},{"./ajax_setup":1,"./router":3,"jquery":12,"moment":13,"underscore":14}],3:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -88,24 +88,29 @@ var _viewsUser = require('./views/user');
 
 var _viewsUser2 = _interopRequireDefault(_viewsUser);
 
+var _viewsForm = require('./views/form');
+
+var _viewsForm2 = _interopRequireDefault(_viewsForm);
+
 var routes = {
   "": "showHome",
   "users": "showUsers",
+  "users/new": "showForm",
   "users/:id": "showInividualUser"
 };
 
 function initialize(appElement) {
+  var _this = this;
+
   this.$appEl = appElement;
 
   this.users = new _user_collection2['default']();
 
-  var router = this;
-
   this.$appEl.on('click', '.user-list-item', function (event) {
     var $li = (0, _jquery2['default'])(event.currentTarget);
     var userId = $li.data('user-id');
-    router.navigate('users/' + userId);
-    router.showInividualUser(userId);
+    _this.navigate('users/' + userId);
+    _this.showInividualUser(userId);
   });
 }
 
@@ -115,16 +120,16 @@ function showHome() {
 }
 
 function showUsers() {
-  var _this = this;
+  var _this2 = this;
 
   console.log('this is the users page');
   this.users.fetch().then(function () {
-    _this.$appEl.html((0, _viewsUser_list2['default'])(_this.users.toJSON()));
+    _this2.$appEl.html((0, _viewsUser_list2['default'])(_this2.users.toJSON()));
   });
 }
 
 function showInividualUser(id) {
-  var _this2 = this;
+  var _this3 = this;
 
   var user = this.users.get(id);
 
@@ -133,9 +138,29 @@ function showInividualUser(id) {
   } else {
     user = this.users.add({ objectId: id });
     user.fetch().then(function () {
-      _this2.$appEl.html((0, _viewsUser2['default'])(user.toJSON()));
+      _this3.$appEl.html((0, _viewsUser2['default'])(user.toJSON()));
     });
   }
+}
+
+function showForm() {
+  var _this4 = this;
+
+  this.$appEl.html((0, _viewsForm2['default'])());
+  (0, _jquery2['default'])('#btnCreateUser').on('click', function (evt) {
+    console.log('it worked!');
+    var newUser = {
+      FirstName: (0, _jquery2['default'])('input[name="FirstName"]').val(),
+      LastName: (0, _jquery2['default'])('input[name="LastName"]').val(),
+      PhoneNumber: (0, _jquery2['default'])('input[name="PhoneNumber"]').val(),
+      Location: (0, _jquery2['default'])('input[name="Location"]').val(),
+      Photo: (0, _jquery2['default'])('input[name="Photo"]').val()
+    };
+    _this4.users.create(newUser);
+    _this4.navigate('users');
+    _this4.showUsers();
+    return false;
+  });
 }
 
 function start() {
@@ -148,13 +173,14 @@ var Router = _backbone2['default'].Router.extend({
   showHome: showHome,
   showUsers: showUsers,
   showInividualUser: showInividualUser,
+  showForm: showForm,
   start: start
 });
 
 exports['default'] = Router;
 module.exports = exports['default'];
 
-},{"./user_collection":4,"./user_model":5,"./views/home":6,"./views/user":7,"./views/user_list":8,"backbone":10,"jquery":11}],4:[function(require,module,exports){
+},{"./user_collection":4,"./user_model":5,"./views/form":6,"./views/home":7,"./views/user":8,"./views/user_list":9,"backbone":11,"jquery":12}],4:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -187,7 +213,7 @@ var UserCollection = _backbone2['default'].Collection.extend({
 exports['default'] = UserCollection;
 module.exports = exports['default'];
 
-},{"./user_model":5,"backbone":10}],5:[function(require,module,exports){
+},{"./user_model":5,"backbone":11}],5:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -209,17 +235,17 @@ var UserModel = _Backbone2['default'].Model.extend({
 exports['default'] = UserModel;
 module.exports = exports['default'];
 
-},{"Backbone":9}],6:[function(require,module,exports){
+},{"Backbone":10}],6:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-function homeTemp() {
-  return "\n  <ul>\n    <li>\n    <a href=\"#users\">Here is the URL for the contact list</a>\n    </li>\n  </ul>\n  ";
+function formTemp() {
+  return "\n    <form>\n      <a href=\"#users\" class=\"back-button\"><i class=\"fa fa-step-backward\"></i></a>\n      <br>\n      First Name\n      <br>\n      <input type=\"text\" name=\"FirstName\">\n      <br>\n      Last Name\n      <br>\n      <input type=\"text\" name=\"LastName\">\n      <br>\n      Phone\n      <br>\n      <input type=\"text\" name=\"PhoneNumber\">\n      <br>\n      Location\n      <br>\n      <input type=\"text\" name=\"Location\">\n      <br>\n      Photo URL\n      <br>\n      <input type=\"text\" name=\"Photo\">\n      <br>\n      <input id=\"btnCreateUser\" class=\"buttonUser\" type=\"button\" value=\"Submit\" />\n    </form>\n  ";
 }
 
-exports["default"] = homeTemp;
+exports["default"] = formTemp;
 module.exports = exports["default"];
 
 },{}],7:[function(require,module,exports){
@@ -228,14 +254,29 @@ module.exports = exports["default"];
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-function userTemplate(user) {
-  return "\n  <div><img src=\"images/avatar.png\"></img></div>\n  <ul>\n    <li><i class=\"fa fa-user\"></i>" + user.FirstName + " " + user.LastName + "</li>\n    <li><i class=\"fa fa-phone\"></i>" + user.PhoneNumber + "</li>\n    <li><i class=\"fa fa-location-arrow\"></i>" + user.Location + "</li>\n  </ul>\n  <span><i class=\"fa fa-backward\"></i><a href=\"#users\">Back</a></span>\n\n  ";
+function homeTemp() {
+  return "\n    <p>Hey</p>\n  ";
 }
 
-exports["default"] = userTemplate;
+exports["default"] = homeTemp;
 module.exports = exports["default"];
 
 },{}],8:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+
+function userTemplate(user) {
+  var photoURL = user.Photo || 'images/avatar.png';
+  return '\n  <div><img class="avatarlrg" src="' + photoURL + '" />\n  <a href="#users"><i class="fa fa-backward user-float"></i></a>\n  </div>\n  <ul>\n    <li class="user-line"><i class="fa fa-user"></i>' + user.FirstName + ' ' + user.LastName + '</li>\n    <li class="user-line"><i class="fa fa-phone"></i>' + user.PhoneNumber + '</li>\n    <li class="user-line"><i class="fa fa-location-arrow"></i>' + user.Location + '</li>\n  </ul>\n\n  ';
+}
+
+exports['default'] = userTemplate;
+module.exports = exports['default'];
+
+},{}],9:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -250,13 +291,13 @@ function makeUserList(users) {
 }
 
 function usersTemplate(users) {
-  return '\n    <h2>MY PEEPS</h2>\n    <ul>' + makeUserList(users) + '</ul>\n  ';
+  return '\n    <a href="#users/new"><i class="fa fa-plus plus"></a></i>\n    <img src=\'images/gif.gif\'>\n    <ul>' + makeUserList(users) + '</ul>\n  ';
 }
 
 exports['default'] = usersTemplate;
 module.exports = exports['default'];
 
-},{}],9:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 (function (global){
 //     Backbone.js 1.2.3
 
@@ -2155,7 +2196,7 @@ module.exports = exports['default'];
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{"jquery":11,"underscore":13}],10:[function(require,module,exports){
+},{"jquery":12,"underscore":14}],11:[function(require,module,exports){
 (function (global){
 //     Backbone.js 1.2.3
 
@@ -4054,7 +4095,7 @@ module.exports = exports['default'];
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{"jquery":11,"underscore":13}],11:[function(require,module,exports){
+},{"jquery":12,"underscore":14}],12:[function(require,module,exports){
 /*!
  * jQuery JavaScript Library v2.1.4
  * http://jquery.com/
@@ -13266,7 +13307,7 @@ return jQuery;
 
 }));
 
-},{}],12:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 //! moment.js
 //! version : 2.10.6
 //! authors : Tim Wood, Iskren Chernev, Moment.js contributors
@@ -16462,7 +16503,7 @@ return jQuery;
     return _moment;
 
 }));
-},{}],13:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 //     Underscore.js 1.8.3
 //     http://underscorejs.org
 //     (c) 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors

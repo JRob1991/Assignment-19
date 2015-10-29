@@ -14,7 +14,8 @@ function makeUserList(users) {
 
 function usersTemplate(users) {
   return `
-    <h2>MY PEEPS</h2>
+    <a href="#users/new"><i class="fa fa-plus plus"></a></i>
+    <img src='images/gif.gif'>
     <ul>${makeUserList(users)}</ul>
   `;
 }
